@@ -90,4 +90,15 @@ mod my_module_test {
         assert_eq!(true, my_mod.is_sorted(&sorted, ordered));
         assert_eq!(false, my_mod.is_sorted(&unsorted, ordered));
     }
+
+    #[test]
+    fn windows() {
+        let i = [0, 1, 2, 3];
+        let a = i.windows(2).all(
+            |a| {
+                println!("{:?}", a);
+                true
+            });
+        assert_eq!(true, a)
+    }
 }
