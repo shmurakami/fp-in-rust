@@ -40,6 +40,15 @@ impl MyModule {
 
         left
     }
+
+    fn is_sorted<A, F>(&self, _as: &Vec<A>, ordered: F) -> bool
+        where
+            F: Fn(&A, &A) -> bool,
+    {
+        // actually iterator.as_sorted_by
+        _as.windows(2)
+            .all(|a| ordered(&a[0], &a[1]))
+    }
 }
 
 #[cfg(test)]
@@ -67,5 +76,18 @@ mod my_module_test {
         let my_mod = MyModule {};
         assert_eq!(0, my_mod.fib(0));
         assert_eq!(13, my_mod.fib(7));
+    }
+
+    #[test]
+    fn is_sorted_i32() {
+        let my_mod = MyModule {};
+        let sorted = vec![0, 1, 3, 5, 6];
+        let unsorted = vec![0, 1, 3, 2, 4];
+
+        fn ordered(x: &i32, y: &i32) -> bool {
+            x < y
+        }
+        assert_eq!(true, my_mod.is_sorted(&sorted, ordered));
+        assert_eq!(false, my_mod.is_sorted(&unsorted, ordered));
     }
 }
