@@ -42,24 +42,19 @@ impl MyModule {
     }
 
     fn is_sorted<A, F>(&self, _as: &Vec<A>, ordered: F) -> bool
-        where
-            F: Fn(&A, &A) -> bool,
+    where
+        F: Fn(&A, &A) -> bool,
     {
         // actually iterator.as_sorted_by
-        _as.windows(2)
-            .all(|a| ordered(&a[0], &a[1]))
+        _as.windows(2).all(|a| ordered(&a[0], &a[1]))
     }
 
     fn curry<A, B, C, F, G>(&self, _f: F) -> impl Fn(A) -> dyn G
-        where
-            F: Fn(A, B) -> C,
-            G: Fn(B) ->C,
+    where
+        F: Fn(A, B) -> C,
+        G: Fn(B) -> C,
     {
-        move |a: A| {
-            |b: B| {
-                _f(a, b)
-            }
-        }
+        move |a: A| |b: B| _f(a, b)
     }
 }
 
@@ -106,11 +101,10 @@ mod my_module_test {
     #[test]
     fn windows() {
         let i = [0, 1, 2, 3];
-        let a = i.windows(2).all(
-            |a| {
-                println!("{:?}", a);
-                true
-            });
+        let a = i.windows(2).all(|a| {
+            println!("{:?}", a);
+            true
+        });
         assert_eq!(true, a)
     }
 
@@ -118,9 +112,11 @@ mod my_module_test {
     fn curry() {
         let my_module = MyModule {};
 
-        fn adder(x: i32, y: i32) -> i32 { x + y }
+        fn adder(x: i32, y: i32) -> i32 {
+            x + y
+        }
 
-        let ga  = my_module.curry(adder);
+        let ga = my_module.curry(adder);
         let e = ga(10);
         assert_eq!(10, e)
     }
