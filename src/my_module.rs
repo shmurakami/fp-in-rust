@@ -63,6 +63,14 @@ impl MyModule {
     {
         double(value)
     }
+
+    fn return_closure(&self) -> fn(i32) -> i32 {
+        |x: i32| return x * 2
+    }
+
+    fn return_closure_string(&self) -> fn(&str) -> String {
+        |s: &str| return format!("{}{}", s, s)
+    }
 }
 
 #[cfg(test)]
@@ -123,6 +131,21 @@ mod my_module_test {
             "strstr",
             my_mod.closure("str", |x: &str| { return format!("{}{}", x, x) })
         )
+    }
+
+    #[test]
+    fn return_closure() {
+        let my_mod = MyModule {};
+        let c = my_mod.return_closure();
+        assert_eq!(2, c(1));
+        assert_eq!(4, c(2));
+    }
+
+    #[test]
+    fn return_closure_string() {
+        let my_mod = MyModule {};
+        let c = my_mod.return_closure_string();
+        assert_eq!("strstr", c("str"));
     }
 
     // #[test]
