@@ -49,14 +49,6 @@ impl MyModule {
         _as.windows(2).all(|a| ordered(&a[0], &a[1]))
     }
 
-    // fn curry<A, B, C, F, G>(&self, _f: F) -> impl Fn(A) -> dyn G
-    // where
-    //     F: Fn(A, B) -> C,
-    //     G: Fn(B) -> C,
-    // {
-    //     move |a: A| |b: B| _f(a, b)
-    // }
-
     fn closure<T, R, F>(&self, value: T, double: F) -> R
     where
         F: Fn(T) -> R,
@@ -147,17 +139,4 @@ mod my_module_test {
         let c = my_mod.return_closure_string();
         assert_eq!("strstr", c("str"));
     }
-
-    // #[test]
-    // fn curry() {
-    //     let my_module = MyModule {};
-    //
-    //     fn adder(x: i32, y: i32) -> i32 {
-    //         x + y
-    //     }
-    //
-    //     let ga = my_module.curry(adder);
-    //     let e = ga(10);
-    //     assert_eq!(10, e)
-    // }
 }
