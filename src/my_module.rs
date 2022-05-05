@@ -63,6 +63,14 @@ impl MyModule {
     fn return_closure_string(&self) -> fn(&str) -> String {
         |s: &str| return format!("{}{}", s, s)
     }
+
+    fn compose<A, B, C, F, G>(&self, f: F, g: G) -> impl Fn(A) -> C
+    where
+        F: Fn(B) -> C,
+        G: Fn(A) -> B,
+    {
+        move |a: A| f(g(a))
+    }
 }
 
 #[cfg(test)]
@@ -138,5 +146,26 @@ mod my_module_test {
         let my_mod = MyModule {};
         let c = my_mod.return_closure_string();
         assert_eq!("strstr", c("str"));
+    }
+
+    #[test]
+    fn compose() {
+        let my_mod = MyModule {};
+        let double = |i: i32| i * 2;
+        let triple = |i: i32| i * 3;
+        assert_eq!(12, my_mod.compose(double, triple)(2));
+
+        let str_double = |s: &str| format!("{}{}", s, s);
+        let trim: fn(String) -> String = |s: String| {
+            let len = s.len();
+            if len < 3 {
+                String::from("")
+            } else {
+                s[1..(len - 1)].to_string()
+            }
+        };
+        assert_eq!("", my_mod.compose(trim, str_double)(""));
+        assert_eq!("", my_mod.compose(trim, str_double)("a"));
+        assert_eq!("oofo", my_mod.compose(trim, str_double)("foo"))
     }
 }
